@@ -684,7 +684,7 @@ class MachineCom(object):
 
 		self._currentFile = StreamingGcodeFileInformation(filename, localFilename, remoteFilename)
 		self._currentFile.start()
-
+                self.resetLineNumbers()
 		self.sendCommand("M28 %s" % remoteFilename)
 		eventManager().fire(Events.TRANSFER_STARTED, {"local": localFilename, "remote": remoteFilename})
 		self._callback.on_comm_file_transfer_started(remoteFilename, self._currentFile.getFilesize())
@@ -790,15 +790,6 @@ class MachineCom(object):
 
 	def getSdFiles(self):
 		return self._sdFiles
-
-	def startSdFileTransfer(self, filename):
-		if not self._sdEnabled:
-			return
-
-		if not self.isOperational() or self.isBusy():
-			return
-		self._changeState(self.STATE_TRANSFERING_FILE)
-		self.sendCommand("M28 %s" % filename.lower())
 
 	def endSdFileTransfer(self, filename):
 		if not self._sdEnabled:
