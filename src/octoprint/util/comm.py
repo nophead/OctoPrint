@@ -1102,8 +1102,6 @@ class MachineCom(object):
 						})
 				elif 'Writing to file' in line and self.isStreaming():
 					self._changeState(self.STATE_PRINTING)
-					self._clear_to_send.set()
-					line = "ok"
 				elif 'Done printing file' in line and self.isSdPrinting():
 					# printer is reporting file finished printing
 					self._sdFilePos = 0
@@ -1121,6 +1119,7 @@ class MachineCom(object):
 						except:
 							pass
 				elif 'Done saving file' in line:
+					self._clear_to_send.set()
 					self.refreshSdFiles()
 				elif 'File deleted' in line and line.strip().endswith("ok"):
 					# buggy Marlin version that doesn't send a proper \r after the "File deleted" statement, fixed in
